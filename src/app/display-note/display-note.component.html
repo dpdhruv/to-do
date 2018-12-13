@@ -1,0 +1,136 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12 p-lg-2 p-sm-3" style="background:#e6fff2; box-shadow: 0px 1px 1px -1px black;">
+     <div class="row" style="margin:auto">
+        <div class="col-lg-6 col-sm-2 col-md-12 p-3">
+          <div class="row">
+            <div class="col-2">
+
+            </div>
+            <div (click)="AllNotes()" [class.active-filter-button]="filterByDefault" class="col-lg-4 col-md-4 col-4 text-center all-notes-button" style="background:white;cursor: pointer;">
+              <div>
+                All Notes
+              </div>
+            </div>
+            <div (click)="ToDoOnly()" [class.active-filter-button]="selectedFilter" class="col-lg-4 col-md-4 col-4 text-center ToDoNotes-button" style="background:white;cursor: pointer;">
+              <div>
+                To-Do's
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 d-none d-lg-block">
+          <div class="row">
+            <div class="col-9"></div>
+            <div class="col-3 add-note-button mt-3 text-center" data-toggle="modal" data-target="#ToDoModal"  style="color:#5d5dd5;cursor: pointer;">
+              <span class="font-weight-bold" style="color:#5d5dd5">+</span>
+              Add Note
+            </div>
+          </div>
+        </div>
+     <div> 
+    </div>       
+  </div>
+</div>
+
+
+<!-- To Do Modal Form -->
+
+  <div class="modal fade" id="ToDoModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background:#004080;color:white;">
+            <h5 class="modal-title" id="exampleModalLabel">Add Note</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+          <form #todoForm="ngForm">
+              <div class="form-group">
+                  <textarea rows="2" placeholder="Type Note" required #note="ngModel" class="form-control" [class.is-invalid]="note.invalid && note.touched" name="note" ngModel></textarea>
+                  <small [class.d-none]="note.valid || note.untouched" class="text-danger"><sup>*</sup>This field is required</small>
+                  <hr height="2px">
+              </div>
+              To Do:&nbsp;<mat-slide-toggle name="todo" ngModel (change)="showDatePicker(todoForm.value.todo)"></mat-slide-toggle>
+              <br><br>
+              <div [class.hide-date-picker]="hideDatePicker" class="form-group form-inline">
+                <label>Due</label>&nbsp;
+                <input type="date" class="form-control" name="duedate" ngModel>
+              </div>
+          </form> 
+          </div>
+          <div class="modal-footer">
+            <button type="button"  class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" [class.disabled]="note.invalid" class="btn btn-primary" (click)="submitForm(todoForm.value)">Done</button>
+          </div>
+        </div>
+      </div>
+  </div>   
+
+<!--  To Do Modal Form Ends-->
+
+
+<!----  To Do Display -->
+
+<div class="container-fluid mt-lg-5">
+  <div class="row">
+    <div class="col-lg-10 col-md-12 mx-lg-auto p-2" style="background:#004080">
+
+      <!-- Edit button large screen  -->
+      <span class="pl-lg-2 pl-sm-2 d-none d-lg-block" style="color:white;">
+        <span *ngIf="showEditButton" (click)="edit()" style="cursor:pointer;"><i class="fas fa-pencil-alt pl-lg-2 pr-lg-1"></i>Edit</span> 
+      </span>
+        <!--Cancel and remove button for large screen-->
+          <div  *ngIf="showEditOptions" class="d-none d-lg-block">
+            <span (click)="cancel()" style="cursor:pointer;color:white">Cancel</span> 
+            &nbsp; 
+            <span (click)="remove()" style="cursor:pointer;color:white">Remove</span>
+          </div>
+        <!--Cancel and remove button for large screen Ends-->
+      <!-- Edit button large screen Ends  -->
+
+      <!-- Add Note button for smaller screens -->
+      <span *ngIf="showAddNoteInSmallScreen" data-toggle="modal" data-target="#ToDoModal" class="pl-lg-2 pl-sm-2 d-lg-none float-left" style="color:white">
+        <i class="fa fa-plus pl-lg-2"></i>
+      Add Note 
+      </span>
+      <span *ngIf="showEditOptions" class="d-lg-none float-left" (click)="cancel()" style="cursor:pointer;color:white">Cancel</span> 
+      <!-- Add Note button for smaller screens Ends-->
+
+      <!-- Edit button for small screens -->
+      <span class="pl-lg-2 pl-sm-2 d-lg-none float-right" style="color:white">
+       <span *ngIf="showEditButton" (click)="edit()" style="cursor:pointer;"> 
+         <i class="fas fa-pencil-alt pl-lg-2"></i>
+          Edit 
+        </span>
+      </span>
+      <!--Cancel and remove button for small screen-->
+      <div  *ngIf="showEditOptions" class="d-lg-none float-right">
+          <span (click)="remove()" style="cursor:pointer;color:white">Remove</span>
+      </div>
+      <!--Cancel and remove button for small screen Ends-->
+      <!-- Edit button for small screens Ends -->
+    </div>
+    <div class="note-section col-lg-10 pt-lg-3 pt-2 mx-lg-auto" *ngFor="let todo of ToDoList">
+        <form *ngIf="showEditOptions" class="float-left">
+            <div class="form-check" style="display:contents">
+                <label class="form-check-label">
+                  <input type="checkbox"  name="selected" (change)="selectedToDo($event,todo.id)">
+                </label>
+              </div>
+        </form>
+      <div *ngIf=todo.isToDo class="ml-lg-2 ml-2 float-left due-date">
+        <div class="due-date-header pl-lg-2 pr-lg-2 text-center" style="font-size:0.9rem;color:white">To-Do</div>
+        <div class="due-date-footer" style="font-size:0.9rem;color:black">Due {{todo.Due|date:'d/L'}}</div>
+      </div>
+      <span class="pl-lg-4 pl-2 pt-lg-0 text-justify">{{todo.body}}</span>
+      <span class="float-right">{{todo.publishDate |date:'d/L'}}</span>
+      <hr class="mt-4">
+    </div>
+  </div>
+</div>
+
+
+
+<!----  To Do Display Ends -->

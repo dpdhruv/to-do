@@ -1,0 +1,35 @@
+.all-notes-button{
+    color: #5d5dd5; 
+    border:1px solid #004080;
+    border-right: none;
+    font-weight: bold;
+}
+.ToDoNotes-button{
+    color: #5d5dd5;
+    border:1px solid #004080;
+    border-left:none;
+    font-weight: bold;
+}
+
+.active-filter-button{
+    color:white;
+    font-weight:bold;
+    background: #004080 !important;
+}
+
+.hide-date-picker{
+    display: none;
+}
+
+.note-section{
+    min-width: inherit;
+    background:#e6f2ff;
+}
+.due-date{
+    border:1px solid black;
+}
+
+.due-date-header{
+    background:#00cc44;
+}
+
